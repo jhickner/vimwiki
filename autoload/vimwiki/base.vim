@@ -404,6 +404,7 @@ function! vimwiki#base#open_link(cmd, link, ...) "{{{
 
   let is_wiki_link = link_infos.scheme =~# '\mwiki\d\+'
         \ || link_infos.scheme =~# 'diary'
+        \ || link_infos.scheme =~# 'local'
 
   let update_prev_link = is_wiki_link &&
         \ !vimwiki#path#is_equal(link_infos.filename, vimwiki#path#current_wiki_file())
@@ -857,12 +858,6 @@ function! vimwiki#base#edit_file(command, filename, anchor, ...) "{{{
   " getpos() directly after this command. Strange.
   if !(a:command ==# ':e ' && vimwiki#path#is_equal(a:filename, expand('%:p')))
     execute a:command.' '.fname
-    " Make sure no other plugin takes ownership over the new file. Vimwiki
-    " rules them all! Well, except for directories, which may be opened with
-    " Netrw
-    if &filetype != 'vimwiki' && fname !~ '\m/$'
-      set filetype=vimwiki
-    endif
   endif
   if a:anchor != ''
     call s:jump_to_anchor(a:anchor)
